@@ -81,11 +81,17 @@
                 :class="onDetailRowClass(item, itemIndex)"
               >
                 <td :colspan="countVisibleFields">
-                  <component :is="detailRowComponent"
+                  <component v-if="detailRowComponent"
+                     :is="detailRowComponent"
                     :row-data="item"
                     :row-index="itemIndex"
                     :options="detailRowOptions"
                   ></component>
+                  <slot v-else name="detailRowComponent"
+                    :row-data="item"
+                    :row-index="itemIndex"
+                    :options="detailRowOptions"
+                  ></slot>
                 </td>
               </tr>
             </transition>
@@ -335,7 +341,7 @@ export default {
     useDetailRow () {
       if ( ! this.dataIsAvailable) return false
 
-      return this.detailRowComponent !== ''
+      return this.detailRowComponent || this.isFieldSlot('detailRowComponent')
     },
     dataIsAvailable () {
       if ( ! this.tableData) return false
